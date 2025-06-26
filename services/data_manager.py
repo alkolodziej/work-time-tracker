@@ -1,7 +1,8 @@
-### services/data_manager.py
+# services/data_manager.py
 import json
 import os
 from models.entry import WorkEntry
+
 
 class DataManager:
     """Zarządza zapisem i odczytem wpisów czasu pracy."""
@@ -18,7 +19,8 @@ class DataManager:
         try:
             with open(self.filepath, "r") as f:
                 data = json.load(f)
-                # Tworzenie listy obiektów WorkEntry na podstawie danych z pliku
+                # Tworzenie listy obiektów WorkEntry
+                # na podstawie danych z pliku
                 return [WorkEntry.from_dict(e) for e in data]
         except Exception as e:
             print(f"Błąd wczytywania danych: {e}")

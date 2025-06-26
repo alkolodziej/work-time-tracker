@@ -1,20 +1,21 @@
-### main.py
+# main.py
 from services.data_manager import DataManager
 from services.analyzer import Analyzer
 from models.entry import WorkEntry
 from utils.validators import validate_date, validate_time, log_operation
-from functools import reduce
 import csv
 import sys
 
 # Zmienna globalna (przykład użycia zmiennej globalnej)
 GLOBAL_USER = "admin"
 
+
 def print_header():
     """Wyświetla nagłówek aplikacji w atrakcyjny sposób."""
     print("\n" + "=" * 50)
     print("      SYSTEM REJESTRACJI CZASU PRACY".center(50))
     print("=" * 50)
+
 
 def print_menu():
     """Wyświetla menu główne."""
@@ -37,6 +38,7 @@ def print_menu():
     for item in menu:
         print(f" {item}")
 
+
 @log_operation
 def add_entry(data_manager):
     """Dodaje nowy wpis czasu pracy z walidacją i atrakcyjnym komunikatem."""
@@ -58,15 +60,19 @@ def add_entry(data_manager):
     data_manager.entries.append(entry)
     print("✅ Dodano wpis.")
 
+
 def recursive_sum(entries, idx=0):
     """Rekurencyjnie sumuje czas pracy ze wszystkich wpisów."""
     if idx >= len(entries):
         return 0
     return entries[idx].duration() + recursive_sum(entries, idx + 1)
 
+
 def filter_entries(entries, predicate):
-    """Zwraca listę wpisów spełniających warunek predicate (funkcja jako argument)."""
+    """Zwraca listę wpisów spełniających
+    warunek predicate (funkcja jako argument)."""
     return [e for e in entries if predicate(e)]
+
 
 @log_operation
 def remove_entry(data_manager):
@@ -86,6 +92,7 @@ def remove_entry(data_manager):
             print("❌ Niepoprawny indeks.")
     except Exception as e:
         print(f"Błąd usuwania: {e}")
+
 
 @log_operation
 def edit_entry(data_manager):
@@ -117,6 +124,7 @@ def edit_entry(data_manager):
     except Exception as e:
         print(f"Błąd edycji: {e}")
 
+
 def string_operations_demo():
     """Pokazuje operacje na stringach: dzielenie, wyszukiwanie."""
     print("\n--- Operacje na stringach ---")
@@ -130,6 +138,7 @@ def string_operations_demo():
     else:
         print(f"❌ Nie znaleziono '{search}' w tekście.")
 
+
 def export_to_csv(entries, filename):
     """Eksportuje wpisy do pliku CSV."""
     try:
@@ -142,6 +151,7 @@ def export_to_csv(entries, filename):
     except Exception as e:
         print(f"Błąd eksportu CSV: {e}")
 
+
 def import_from_csv(data_manager, filename):
     """Importuje wpisy z pliku CSV."""
     try:
@@ -149,12 +159,18 @@ def import_from_csv(data_manager, filename):
             reader = csv.DictReader(f)
             count = 0
             for row in reader:
-                if validate_date(row["date"]) and validate_time(row["start"]) and validate_time(row["end"]):
-                    data_manager.entries.append(WorkEntry(row["date"], row["start"], row["end"]))
+                if (
+                        validate_date(row["date"]) and
+                        validate_time(row["start"]) and
+                        validate_time(row["end"])
+                ):
+                    data_manager.entries.append(
+                        WorkEntry(row["date"], row["start"], row["end"]))
                     count += 1
         print(f"✅ Zaimportowano {count} wpisów z pliku {filename}")
     except Exception as e:
         print(f"Błąd importu CSV: {e}")
+
 
 def print_entries(entries):
     """Ładnie wyświetla wszystkie wpisy."""
@@ -165,9 +181,9 @@ def print_entries(entries):
     for i, e in enumerate(entries, 1):
         print(f"{str(i).rjust(2)}. {e}")
 
+
 def main():
     # Zmienna lokalna (przykład)
-    local_var = "start"
     data_manager = DataManager("data/work_log.json")
     analyzer = Analyzer()
 
@@ -183,8 +199,10 @@ def main():
             edit_entry(data_manager)
         elif choice == "4":
             print("\n--- Wyszukiwanie wpisów po dacie ---")
-            search_date = input("Podaj datę do wyszukania (YYYY-MM-DD): ").strip()
-            found = list(filter(lambda e: e.date == search_date, data_manager.entries))
+            search_date = input(
+                "Podaj datę do wyszukania (YYYY-MM-DD): ").strip()
+            found = list(filter(lambda e: e.date ==
+                         search_date, data_manager.entries))
             print_entries(found)
         elif choice == "5":
             analyzer.analyze(data_manager.entries)
@@ -204,8 +222,10 @@ def main():
         elif choice == "10":
             print("\n--- Filtruj wpisy ---")
             try:
-                min_hours = float(input("Pokaż wpisy z czasem pracy >= (godz): "))
-                filtered = filter_entries(data_manager.entries, lambda e: e.duration() >= min_hours)
+                min_hours = float(
+                    input("Pokaż wpisy z czasem pracy >= (godz): "))
+                filtered = filter_entries(
+                    data_manager.entries, lambda e: e.duration() >= min_hours)
                 print_entries(filtered)
             except ValueError:
                 print("❌ Podano niepoprawną wartość.")
@@ -222,6 +242,7 @@ def main():
             sys.exit(0)
         else:
             print("❌ Niepoprawna opcja. Spróbuj ponownie.")
+
 
 if __name__ == "__main__":
     main()

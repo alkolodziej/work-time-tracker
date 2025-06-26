@@ -1,7 +1,8 @@
-### services/analyzer.py
+# services/analyzer.py
 from collections import defaultdict
 import matplotlib.pyplot as plt
 from functools import reduce
+
 
 class Analyzer:
     """Analizuje dane o czasie pracy."""
@@ -15,7 +16,7 @@ class Analyzer:
         # reduce - suma godzin (programowanie funkcyjne)
         total = reduce(lambda acc, e: acc + e.duration(), entries, 0)
         avg = total / len(entries)
-        print(f"\nStatystyki czasu pracy:")
+        print("\nStatystyki czasu pracy:")
         print(f" - Łączny czas pracy: {total:.2f}h")
         print(f" - Średni czas na wpis: {avg:.2f}h")
 
@@ -23,7 +24,6 @@ class Analyzer:
         monthly = defaultdict(float)
         for e in entries:
             monthly[e.date[:7]] += e.duration()
-        months = set(monthly.keys())  # zbiór miesięcy
 
         print("\nCzas pracy wg miesięcy:")
         for month, hours in monthly.items():
